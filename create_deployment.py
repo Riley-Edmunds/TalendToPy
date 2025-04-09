@@ -1,11 +1,19 @@
 from prefect import flow
+from prefect.runner.storage import GitRepository
+from prefect.blocks.system import Secret
 
-# Source for the code to deploy (here, a GitHub repo)
-SOURCE_REPO= r"https://github.com/Riley-Edmunds/TalendToPy.git"
 
 if __name__ == "__main__":
+
+    github_repo = GitRepository(
+        url=r"https://github.com/Riley-Edmunds/TalendToPy.git",
+        credentials={
+            "access_token": Secret.load("my-secret-block-with-my-gh-credentials")
+        },
+    )
+
     flow.from_source(
-        source=SOURCE_REPO,
+        source=github_repo,
         entrypoint="test_prefect.py:show_stars", # Specific flow to run
     ).deploy(
         name="test-prefect-deployment",

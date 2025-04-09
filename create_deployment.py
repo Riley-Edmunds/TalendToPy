@@ -5,11 +5,11 @@ from prefect_github import GitHubCredentials
 
 if __name__ == "__main__":
 
+    github_creds = GitHubCredentials.load("talendtopython")
+
     github_repo = GitRepository(
         url="https://github.com/Riley-Edmunds/TalendToPy.git",
-        credentials={
-            "access_token": GitHubCredentials.load("talendtopython")
-        },
+        credentials=github_creds,
     )
 
     flow.from_source(

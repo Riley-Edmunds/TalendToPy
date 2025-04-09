@@ -1,29 +1,29 @@
-import httpx
-
-from prefect import flow, task # Prefect flow and task decorators
-
-@flow
-def show_stars(github_repos: list[str]):
-    """Show the number of stars that GitHub repos have"""
-    for repo in github_repos:
-        repo_stats = fetch_stats(repo)
-        stars = get_stars(repo_stats)
-        print(f"{repo}: {stars} stars")
-
-@task
-def fetch_stats(github_repo: str):
-    """Fetch the statistics for a GitHub repo"""
-    return httpx.get(f"https://api.github.com/repos/{github_repo}").json()
-
-@task
-def get_stars(repo_stats: dict):
-    """Get the number of stars from GitHub repo statistics"""
-    return repo_stats['stargazers_count']
+from prefect import flow
+from prefect.runner.storage import GitRepository
+from prefect.blocks.system import Secret
 
 
 if __name__ == "__main__":
-    show_stars([
-        "PrefectHQ/prefect",
-        "pydantic/pydantic",
-        "huggingface/transformers"
-    ])
+
+    github_repo = GitRepository(
+        url="https://github.com/Riley-Edmunds/TalendToPy.git",
+        credentials={
+            "access_token": Secret.load("talendtopython")
+        },
+    )
+
+    flow.from_source(
+        source=github_repo,
+        entrypoint="test_prefect.py:show_stars", # Specific flow to run
+    ).deploy(
+        name="test-prefect-deployment",
+        parameters={
+            "github_repos": [
+                "PrefectHQ/prefect",
+                "pydantic/pydantic",
+                "huggingface/transformers"
+            ]
+        },
+        work_pool_name="my-work-pool",
+        cron="0 * * * *",  # Run every hour
+    )

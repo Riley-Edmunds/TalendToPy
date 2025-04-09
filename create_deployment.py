@@ -8,7 +8,7 @@ if __name__ == "__main__":
     github_repo = GitRepository(
         url=r"https://github.com/Riley-Edmunds/TalendToPy.git",
         credentials={
-            "access_token": Secret.load("my-secret-block-with-my-gh-credentials")
+            "access_token": Secret.load("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")
         },
     )
 

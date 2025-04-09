@@ -1,7 +1,7 @@
 from prefect import flow
 
 # Source for the code to deploy (here, a GitHub repo)
-SOURCE_REPO="https://github.com/Riley-Edmunds/TalendToPy.git"
+SOURCE_REPO='https://github.com/Riley-Edmunds/TalendToPy.git'
 
 if __name__ == "__main__":
     flow.from_source(

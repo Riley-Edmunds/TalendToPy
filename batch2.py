@@ -1,5 +1,5 @@
 from prefect import flow
 
 @flow
-def batch1():
+def batch2():
     print("Batch 2")
